@@ -1,13 +1,10 @@
 # 1. Multipath 简介
 
-
 # 2. multipath 使用
 
 ## 2.1 multipath 部署
 
-
 ## 2.2 multipath 配置解释
-
 
 这些配置项定义了对多路径设备的处理规则、默认配置以及黑名单例外规则，这些配置可以确保系统能够正确地识别和处理多路径设备。
 
@@ -70,3 +67,63 @@ blacklist_exceptions {
    2. `find_multipaths`：指定了是否查找多路径设备，这里是启用了查找多路径设备。
    3. `enable_foreign`：指定了哪些设备应该被视为外部设备，这里是没有指定任何外部设备。
 4. `blacklist_exceptions` 部分：这部分定义了例外的黑名单规则。在这里，使用了正则表达式来匹配例外的属性，这里匹配了以 "SCSI_IDENT_" 或 "ID_WWN" 开头的属性。
+
+
+# 3. 多路径切主
+
+## 3.1 确认设备对应的路径
+
+```Bash
+multipath -ll
+```
+
+![](https://avfz9yyd53o.feishu.cn/space/api/box/stream/download/asynccode/?code=ZTM2NGQ2ZDdlOTMyMjg2ZGM3M2FkN2UwNDQwY2FmNWZfZHJMS3ZsbElCR0ZkaEVsQ2p4R3RsejhyRWFpNXpFMXBfVG9rZW46VHRpa2JkY1pGb3VsWkJ4bmZiMWN0S29Cbkp2XzE3MDM1NTY2NTc6MTcwMzU2MDI1N19WNA)
+
+以 mpathc 为例，对应有 sdg、sdd 两个设备，同时可以看到 sdg 状态为 active，说明此时 sdg 为 mpathc 的主路径
+
+## 3.2 切换主路径
+
+1. 进入 multipath 交互模式
+
+```Bash
+multipathd -k
+```
+
+2. 查看多路径拓扑
+
+```Bash
+show topology
+```
+
+与前文的信息对应
+
+![](https://avfz9yyd53o.feishu.cn/space/api/box/stream/download/asynccode/?code=NDY2NjA0MzcwMzRhNzY1MTc2Yzk5NjkyMTFlOTkzYjhfUUh3VXJzVEJZMFpseTZNaTd3T3pWVFBpMDY5MVNESFZfVG9rZW46UGNJbWI4T29Eb2RQc1d4WDZBNWNVY1JFbmhjXzE3MDM1NTY2NTc6MTcwMzU2MDI1N19WNA)
+
+3. 切主
+
+以 mpathc 为例，设备下有多条路径，第一条 sdg 为 group 1，第二条 sdd 为 group 2， 如果想切换主路径到sdd，那么需要执行：
+
+```Bash
+switch map mpathc group 2
+```
+
+![](https://avfz9yyd53o.feishu.cn/space/api/box/stream/download/asynccode/?code=NzNiNWMwNzMwOTg5MDBkM2QzYTlmZTNmOGJiZjljOTZfQ1JESTFVU0Z3djE3TXlBS1Y2WHhhZjRiVVBaTUxsR1lfVG9rZW46SGJwcGJ6R1Q5bzNwTW94NHZMNmN1UjJSbmVkXzE3MDM1NTY2NTc6MTcwMzU2MDI1N19WNA)
+
+## 3.3 测试
+
+切换之后显示一般会有延时，可以打 IO 来看
+
+![](https://avfz9yyd53o.feishu.cn/space/api/box/stream/download/asynccode/?code=YTA3MzgzNmI5NzdhMjk1NTM0ZmQ3N2JhYTQwMzhkNWVfQ25tSUNNTm5zajRkc2REMzFWMmFubjVzaXlTM1RHNTlfVG9rZW46QUVPTWJIZzI0bzNNWTl4YjNEcmMwaGZMbkxlXzE3MDM1NTY2NTc6MTcwMzU2MDI1N19WNA)
+
+对 mpathc 进行顺序读：可以看到负载在 sdd 上
+
+![](https://avfz9yyd53o.feishu.cn/space/api/box/stream/download/asynccode/?code=NGJlNDA3MzQxMDc2OWEwNjc2YjcyMjZmOGQ4OTBlZTdfQlVPb3hZT3ozTGFJaGlDcW00cjFYOWNvQkRkNHFoNVJfVG9rZW46T0VzZWI2T0wzb0hRVDR4VkhqVmNxMkNkbjRkXzE3MDM1NTY2NTc6MTcwMzU2MDI1N19WNA)
+
+# 问题记录
+
+
+
+
+---
+
+# End
