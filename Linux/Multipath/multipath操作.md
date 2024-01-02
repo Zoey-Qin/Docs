@@ -60,7 +60,7 @@ Device Mapper Multipath 可以将服务器节点和存储阵列之间的多条 I
             search: {
                 maxAge: 86400000,// 过期时间，单位毫秒，默认一天
                 paths: 'auto',// 注意：仅适用于 paths: 'auto' 模式
-                placeholder: '搜索',            
+                placeholder: '搜索',          
                 // 支持本地化
                 placeholder: {
                     '/zh-cn/': '搜索',
@@ -156,7 +156,16 @@ multipath -ll
 
 以 mpathc 为例，对应有 sdg、sdd 两个设备，同时可以看到 sdg 状态为 active，说明此时 sdg 为 mpathc 的主路径
 
-## 3.2 切换主路径
+## 3.2 各路径对应的 tcp 连接：
+
+```
+cat /sys/class/iscsi_session/session1/device/connection1\:0/iscsi_connection/connection1\:0/local_port
+
+```
+
+![1703821523724](image/multipath操作/1703821523724.png)
+
+## 3.3 切换主路径
 
 1. 进入 multipath 交互模式
 
@@ -184,7 +193,7 @@ switch map mpathc group 2
 
 ![](https://avfz9yyd53o.feishu.cn/space/api/box/stream/download/asynccode/?code=NzNiNWMwNzMwOTg5MDBkM2QzYTlmZTNmOGJiZjljOTZfQ1JESTFVU0Z3djE3TXlBS1Y2WHhhZjRiVVBaTUxsR1lfVG9rZW46SGJwcGJ6R1Q5bzNwTW94NHZMNmN1UjJSbmVkXzE3MDM1NTY2NTc6MTcwMzU2MDI1N19WNA)
 
-## 3.3 测试
+## 3.4 测试
 
 切换之后显示一般会有延时，可以打 IO 来看
 
@@ -193,6 +202,10 @@ switch map mpathc group 2
 对 mpathc 进行顺序读：可以看到负载在 sdd 上
 
 ![](https://avfz9yyd53o.feishu.cn/space/api/box/stream/download/asynccode/?code=NGJlNDA3MzQxMDc2OWEwNjc2YjcyMjZmOGQ4OTBlZTdfQlVPb3hZT3ozTGFJaGlDcW00cjFYOWNvQkRkNHFoNVJfVG9rZW46T0VzZWI2T0wzb0hRVDR4VkhqVmNxMkNkbjRkXzE3MDM1NTY2NTc6MTcwMzU2MDI1N19WNA)
+
+# 4. multipath 断开 iscsi 连接
+
+
 
 # 问题记录
 
