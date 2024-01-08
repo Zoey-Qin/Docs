@@ -10,7 +10,7 @@ ceph health detail
 
 ![image-20240108103759378](assets/image-20240108103759378.png)
 
-可以看到这是因为创建 pool 却没有指定具体应用导致的
+​	可以看到这是因为创建 pool 却没有指定具体应用导致的
 
 
 
@@ -21,7 +21,7 @@ ceph health detail
    ceph osd pool application enable mypool rbd
    ```
 
-   ![image-20240108104004610](assets/image-20240108104004610.png)
+![image-20240108104004610](assets/image-20240108104004610.png)
 
 4. 验证集群状态
 

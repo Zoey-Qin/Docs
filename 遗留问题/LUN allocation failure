@@ -1,0 +1,15 @@
+# 1. 现象
+
+rbd-gw 重启后 target 等资源丢失，重建 target，创建 image 时报错：Failed : disk create/update failed on node104. LUN allocation failure
+
+![image-20240108144030342](assets/image-20240108144030342.png)
+
+
+
+新建一个其他名称的 image 时成功
+
+![image-20240108144058667](assets/image-20240108144058667.png)
+
+
+
+初步怀疑是之前创建的 image 其实在底层还存在，但是界面上扫描不出来，重新创建时用了重名的 image 名称，导致失败
